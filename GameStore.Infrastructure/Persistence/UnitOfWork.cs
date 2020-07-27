@@ -10,7 +10,7 @@ using GameStore.Domain.Entities.Base.Interfaces;
 using Microsoft.Extensions.Configuration;
 using IUnitOfWork = GameStore.Application.Interfaces.IUnitOfWork;
 
-namespace GameStore.Infrastructure.Persistence.MSSQL
+namespace GameStore.Infrastructure.Persistence
 {
     public class UnitOfWork : IUnitOfWork
     {

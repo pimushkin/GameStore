@@ -5,7 +5,7 @@ using GameStore.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 
-namespace GameStore.Infrastructure.Persistence.MSSQL
+namespace GameStore.Infrastructure.Persistence
 {
     public class ApplicationDbContext : DbContext
     {

@@ -5,7 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using GameStore.Application.Interfaces;
 using GameStore.Domain.Entities;
-using GameStore.Infrastructure.Persistence.MSSQL;
+using GameStore.Infrastructure.Persistence;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using GameStore.Web.Models;
@@ -16,16 +16,16 @@ namespace GameStore.Web.Controllers
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
-        private readonly IUnitOfWork _unitOfWork;
-        public HomeController(ILogger<HomeController> logger, IUnitOfWork unitOfWork)
+        private readonly IGameService _gameService;
+        public HomeController(ILogger<HomeController> logger, IGameService gameService)
         {
             _logger = logger;
-            _unitOfWork = unitOfWork;
+            _gameService = gameService;
         }
 
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            return View(_unitOfWork.GetRepository<Game>().Get());
+            return View(await _gameService.GetListOfAllGamesAsync());
         }
 
         public IActionResult Privacy()
@@ -37,12 +37,6 @@ namespace GameStore.Web.Controllers
         public IActionResult Error()
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
-        }
-
-        protected override void Dispose(bool disposing)
-        {
-            _unitOfWork.Dispose();
-            base.Dispose(disposing);
         }
     }
 }

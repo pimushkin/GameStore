@@ -3,12 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Text;
+using System.Threading.Tasks;
 using GameStore.Application.Interfaces;
 using GameStore.Domain.Entities;
 using GameStore.Domain.Entities.Base;
 using Microsoft.EntityFrameworkCore;
 
-namespace GameStore.Infrastructure.Persistence.MSSQL
+namespace GameStore.Infrastructure.Persistence
 {
     class GenericRepository<TEntity> : IGenericRepository<TEntity> where TEntity: BaseEntity<int>
     {
@@ -21,7 +22,7 @@ namespace GameStore.Infrastructure.Persistence.MSSQL
             _dbSet = context.Set<TEntity>();
         }
 
-        public virtual IEnumerable<TEntity> Get(
+        public virtual IEnumerable<TEntity> Filter(
             Expression<Func<TEntity, bool>> filter = null, 
             Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>> orderBy = null, 
             string includeProperties = "")
@@ -41,9 +42,14 @@ namespace GameStore.Infrastructure.Persistence.MSSQL
             return orderBy != null ? orderBy(query).ToList() : query.ToList();
         }
 
-        public virtual TEntity GetById(object id)
+        public virtual async Task<ICollection<TEntity>> GetAllAsync()
         {
-            return _dbSet.Find(id);
+            return await _dbSet.ToListAsync();
+        }
+
+        public virtual async Task<TEntity> GetByIdAsync(object id)
+        {
+            return await _dbSet.FindAsync(id);
         }
 
         public virtual void Insert(TEntity entity)
