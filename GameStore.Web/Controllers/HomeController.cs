@@ -17,15 +17,18 @@ namespace GameStore.Web.Controllers
     {
         private readonly ILogger<HomeController> _logger;
         private readonly IGameService _gameService;
+        public int PageSize = 4;
+
         public HomeController(ILogger<HomeController> logger, IGameService gameService)
         {
             _logger = logger;
             _gameService = gameService;
         }
 
-        public async Task<IActionResult> Index()
+        public IActionResult Index(int page = 1)
         {
-            return View(await _gameService.GetListOfAllGamesAsync());
+            var games = _gameService.GetListOfGamesForSinglePage(PageSize, page);
+            return View(games);
         }
 
         public IActionResult Privacy()

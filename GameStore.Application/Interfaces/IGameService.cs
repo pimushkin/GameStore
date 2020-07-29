@@ -9,5 +9,6 @@ namespace GameStore.Application.Interfaces
     public interface IGameService
     {
         Task<ICollection<Game>> GetListOfAllGamesAsync();
+        IEnumerable<Game> GetListOfGamesForSinglePage(int pageSize, int page);
     }
 }
