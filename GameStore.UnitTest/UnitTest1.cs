@@ -21,6 +21,7 @@ namespace GameStore.UnitTest
         [Test]
         public void CanPaginate()
         {
+            // Arrange
             const int pageSize = 3;
             const int page = 2;
             var games = new List<Game>
@@ -39,8 +40,10 @@ namespace GameStore.UnitTest
             var gameService = new GameService(unitOfWork);
             var homeController = new HomeController(null, gameService) { PageSize = pageSize };
 
+            // Act
             var result = (IEnumerable<Game>)((ViewResult)homeController.Index(page)).Model;
 
+            // Assert
             var resultGames = result.ToList();
             Assert.IsTrue(resultGames.Count == 2);
             Assert.AreEqual(resultGames[0].Name, "Game4");
