@@ -4,7 +4,10 @@ using GameStore.Domain.Entities;
 using GameStore.Infrastructure.Persistence;
 using GameStore.Infrastructure.Services;
 using GameStore.Web.Controllers;
+using GameStore.WebUI.HtmlHelpers;
+using GameStore.WebUI.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.EntityFrameworkCore;
 using Moq;
 using NUnit.Framework;
@@ -19,7 +22,7 @@ namespace GameStore.UnitTest
         }
 
         [Test]
-        public void CanPaginate()
+        public void Can_Paginate()
         {
             // Arrange
             const int pageSize = 3;
@@ -38,10 +41,10 @@ namespace GameStore.UnitTest
             applicationDbContextMock.Setup(x => x.Set<Game>()).Returns(gamesMock.Object);
             var unitOfWork = new UnitOfWork(applicationDbContextMock.Object);
             var gameService = new GameService(unitOfWork);
-            var homeController = new HomeController(null, gameService) { PageSize = pageSize };
+            var homeController = new HomeController(null, gameService) {PageSize = pageSize};
 
             // Act
-            var result = (IEnumerable<Game>)((ViewResult)homeController.Index(page)).Model;
+            var result = (IEnumerable<Game>) ((ViewResult) homeController.Index(page)).Model;
 
             // Assert
             var resultGames = result.ToList();
@@ -61,6 +64,32 @@ namespace GameStore.UnitTest
             dbSetMock.As<IQueryable<T>>().Setup(m => m.GetEnumerator()).Returns(elementsAsQueryable.GetEnumerator());
 
             return dbSetMock;
+        }
+
+        [Test]
+        public void Can_Generate_Page_Links()
+        {
+            // Arrange
+            var pagingInfo = new PagingInfo
+            {
+                CurrentPage = 2,
+                TotalItems = 28,
+                ItemsPerPage = 10
+            };
+
+            static string PageUrlDelegate(int i)
+            {
+                return "Page" + i;
+            }
+
+            // Act
+            var result = ((HtmlHelper) null).PageLinks(pagingInfo, PageUrlDelegate);
+
+            // Assert
+            Assert.AreEqual(@"<a class=""btn btn-default"" href=""Page1"">1</a>"
+                            + @"<a class=""btn btn-default btn-primary selected"" href=""Page2"">2</a>"
+                            + @"<a class=""btn btn-default"" href=""Page3"">3</a>",
+                result.Value);
         }
     }
 }
