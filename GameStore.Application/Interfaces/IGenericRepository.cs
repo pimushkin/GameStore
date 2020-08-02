@@ -21,5 +21,6 @@ namespace GameStore.Application.Interfaces
         void Delete(object id);
         void Delete(TEntity entityToDelete);
         void Update(TEntity entityToUpdate);
+        int Count();
     }
 }

@@ -78,5 +78,10 @@ namespace GameStore.Infrastructure.Persistence
             _dbSet.Attach(entityToUpdate);
             _context.Entry(entityToUpdate).State = EntityState.Modified;
         }
+
+        public virtual int Count()
+        {
+            return _dbSet.Count();
+        }
     }
 }

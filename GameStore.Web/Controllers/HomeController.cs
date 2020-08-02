@@ -9,6 +9,7 @@ using GameStore.Infrastructure.Persistence;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using GameStore.Web.Models;
+using GameStore.WebUI.Models;
 using IUnitOfWork = GameStore.Application.Interfaces.IUnitOfWork;
 
 namespace GameStore.Web.Controllers
@@ -27,8 +28,17 @@ namespace GameStore.Web.Controllers
 
         public IActionResult Index(int page = 1)
         {
-            var games = _gameService.GetListOfGamesForSinglePage(PageSize, page);
-            return View(games);
+            var model = new GamesListViewModel
+            {
+                Games = _gameService.GetListOfGamesForSinglePage(PageSize, page),
+                PagingInfo = new PagingInfo
+                {
+                    ItemsPerPage = PageSize,
+                    CurrentPage = page,
+                    TotalItems = _gameService.GetCountOfAllGames()
+                }
+            };
+            return View(model);
         }
 
         public IActionResult Privacy()

@@ -1,11 +1,10 @@
-﻿@using GameStore.Domain.Entities
-@model IEnumerable<Game>
+﻿@model GameStore.WebUI.Models.GamesListViewModel
 
 @{
     ViewData["Title"] = "Home Page";
 }
 
-@foreach (var p in @Model)
+@foreach (var p in @Model.Games)
 {
     <div>
         <h3>@p.Name</h3>

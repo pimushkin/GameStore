@@ -10,5 +10,6 @@ namespace GameStore.Application.Interfaces
     {
         Task<ICollection<Game>> GetListOfAllGamesAsync();
         IEnumerable<Game> GetListOfGamesForSinglePage(int pageSize, int page);
+        int GetCountOfAllGames();
     }
 }

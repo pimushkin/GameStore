@@ -25,5 +25,10 @@ namespace GameStore.Infrastructure.Services
             return _unitOfWork.GetRepository<Game>().Filter(orderBy: x =>
                 (IOrderedQueryable<Game>) x.OrderBy(g => g.Price).Skip((page - 1) * pageSize).Take(pageSize));
         }
+
+        public int GetCountOfAllGames()
+        {
+            return _unitOfWork.GetRepository<Game>().Count();
+        }
     }
 }
