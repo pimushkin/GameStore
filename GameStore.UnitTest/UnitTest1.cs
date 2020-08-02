@@ -44,10 +44,10 @@ namespace GameStore.UnitTest
             var homeController = new HomeController(null, gameService) {PageSize = pageSize};
 
             // Act
-            var result = (IEnumerable<Game>) ((ViewResult) homeController.Index(page)).Model;
+            var result = (GamesListViewModel) ((ViewResult) homeController.Index(page)).Model;
 
             // Assert
-            var resultGames = result.ToList();
+            var resultGames = result.Games.ToList();
             Assert.IsTrue(resultGames.Count == 2);
             Assert.AreEqual(resultGames[0].Name, "Game4");
             Assert.AreEqual(resultGames[1].Name, "Game5");
@@ -90,6 +90,39 @@ namespace GameStore.UnitTest
                             + @"<a class=""btn btn-default btn-primary selected"" href=""Page2"">2</a>"
                             + @"<a class=""btn btn-default"" href=""Page3"">3</a>",
                 result.Value);
+        }
+
+        [Test]
+        public void Can_Send_Pagination_View_Model()
+        {
+            // Arrange
+            const int pageSize = 3;
+            const int page = 2;
+            var games = new List<Game>
+            {
+                new Game {Id = 1, Name = "Game1"},
+                new Game {Id = 2, Name = "Game2"},
+                new Game {Id = 3, Name = "Game3"},
+                new Game {Id = 4, Name = "Game4"},
+                new Game {Id = 5, Name = "Game5"}
+            }.AsQueryable();
+            var gamesMock = CreateDbSetMock(games);
+            var options = new DbContextOptions<ApplicationDbContext>();
+            var applicationDbContextMock = new Mock<ApplicationDbContext>(options);
+            applicationDbContextMock.Setup(x => x.Set<Game>()).Returns(gamesMock.Object);
+            var unitOfWork = new UnitOfWork(applicationDbContextMock.Object);
+            var gameService = new GameService(unitOfWork);
+            var homeController = new HomeController(null, gameService) { PageSize = pageSize };
+
+            // Act
+            var result = (GamesListViewModel)((ViewResult)homeController.Index(page)).Model;
+
+            // Assert
+            var pageInfo = result.PagingInfo;
+            Assert.AreEqual(pageInfo.CurrentPage, 2);
+            Assert.AreEqual(pageInfo.ItemsPerPage, 3);
+            Assert.AreEqual(pageInfo.TotalItems, 5);
+            Assert.AreEqual(pageInfo.TotalPages, 2);
         }
     }
 }
