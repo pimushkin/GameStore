@@ -9,6 +9,7 @@ using GameStore.Infrastructure.Persistence;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using GameStore.Web.Models;
+using GameStore.WebUI.Models;
 using IUnitOfWork = GameStore.Application.Interfaces.IUnitOfWork;
 
 namespace GameStore.Web.Controllers
@@ -17,15 +18,27 @@ namespace GameStore.Web.Controllers
     {
         private readonly ILogger<HomeController> _logger;
         private readonly IGameService _gameService;
+        public int PageSize = 4;
+
         public HomeController(ILogger<HomeController> logger, IGameService gameService)
         {
             _logger = logger;
             _gameService = gameService;
         }
 
-        public async Task<IActionResult> Index()
+        public IActionResult Index(int page = 1)
         {
-            return View(await _gameService.GetListOfAllGamesAsync());
+            var model = new GamesListViewModel
+            {
+                Games = _gameService.GetListOfGamesForSinglePage(PageSize, page),
+                PagingInfo = new PagingInfo
+                {
+                    ItemsPerPage = PageSize,
+                    CurrentPage = page,
+                    TotalItems = _gameService.GetCountOfAllGames()
+                }
+            };
+            return View(model);
         }
 
         public IActionResult Privacy()

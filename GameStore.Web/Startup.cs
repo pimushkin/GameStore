@@ -26,6 +26,7 @@ namespace GameStore.Web
         {
             services.AddControllersWithViews();
             services.AddInfrastructure(Configuration);
+            services.AddRouting();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -50,6 +51,11 @@ namespace GameStore.Web
 
             app.UseEndpoints(endpoints =>
             {
+                endpoints.MapControllerRoute(
+                    name: null,
+                    pattern: "Page{page}",
+                    defaults: new { controller = "Home", action = "Index" }
+                );
                 endpoints.MapControllerRoute(
                     name: "default",
                     pattern: "{controller=Home}/{action=Index}/{id?}");
