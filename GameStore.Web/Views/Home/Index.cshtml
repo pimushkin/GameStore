@@ -1,10 +1,11 @@
-﻿@model GameStore.WebUI.Models.GamesListViewModel
+﻿@using GameStore.WebUI.HtmlHelpers
+@model GameStore.WebUI.Models.GamesListViewModel
 
 @{
     ViewData["Title"] = "Home Page";
 }
 
-@foreach (var p in @Model.Games)
+@foreach (var p in Model.Games)
 {
     <div>
         <h3>@p.Name</h3>
@@ -12,3 +13,7 @@
         <h4>@p.Price.ToString("# руб")</h4>
     </div>
 }
+
+<div>
+    @Html.PageLinks(Model.PagingInfo, x => Url.Action("Index", "Home", new {page = x}))
+</div>
